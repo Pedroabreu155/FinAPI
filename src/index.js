@@ -124,6 +124,14 @@ app.get('/statement/:date', verifyIfCPFAccountExists, (request, response) => {
   });
 });
 
+app.get('/balance', verifyIfCPFAccountExists, (request, response) => {
+  const { customer } = request;
+
+  const balance = getBalance(customer.statement);
+
+  return response.json(balance);
+});
+
 app.put('/account', verifyIfCPFAccountExists, (request, response) => {
   const { name } = request.body;
 
