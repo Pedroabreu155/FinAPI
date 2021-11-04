@@ -22,6 +22,18 @@ const verifyIfCPFAccountExists = (request, response, next) => {
   return next();
 };
 
+const getBalance = (statement) => {
+  const balance = statement.reduce((accumulator, operation) => {
+    if (operation.type === 'credit') {
+      return accumulator + operation.amount;
+    } else {
+      return accumulator - operation.amount;
+    }
+  }, 0);
+
+  return balance;
+};
+
 app.get('/', (_, response) => {
   return response.json({ message: 'Hello World' });
 });
@@ -70,6 +82,46 @@ app.post('/deposit', verifyIfCPFAccountExists, (request, response) => {
   customer.statement.push(statementOperation);
 
   return response.status(201).json({ message: 'Operation succedded!' });
+});
+
+app.post('/withdraw', verifyIfCPFAccountExists, (request, response) => {
+  const { amount } = request.body;
+
+  const { customer } = request;
+
+  const balance = getBalance(customer.statement);
+
+  if (balance < amount) {
+    return response.status(400).json({ error: 'Insufficient funds!' });
+  }
+
+  const statementOperation = {
+    amount,
+    created_at: new Date(),
+    type: 'debit',
+  };
+
+  customer.statement.push(statementOperation);
+
+  return response.status(201).json({ message: 'Operation succedded!' });
+});
+
+app.get('/statement/:date', verifyIfCPFAccountExists, (request, response) => {
+  const { customer } = request;
+
+  const { date } = request.params;
+
+  const formattedDate = new Date(date + ' 00:00');
+
+  const statement = customer.statement.filter(
+    (statement) =>
+      statement.created_at.toDateString() ===
+      new Date(formattedDate).toDateString()
+  );
+
+  return response.json({
+    statement,
+  });
 });
 
 app.listen(4000, () => console.log('Server is running! 🔥'));
