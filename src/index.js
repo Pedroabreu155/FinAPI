@@ -124,4 +124,27 @@ app.get('/statement/:date', verifyIfCPFAccountExists, (request, response) => {
   });
 });
 
+app.put('/account', verifyIfCPFAccountExists, (request, response) => {
+  const { name } = request.body;
+
+  const { customer } = request;
+
+  customer.name = name;
+
+  return response.status(201).json({ message: 'User succefully updated!' });
+});
+
+app.get('/account', verifyIfCPFAccountExists, (request, response) => {
+  const { customer } = request;
+  return response.json(customer);
+});
+
+app.delete('/account', verifyIfCPFAccountExists, (request, response) => {
+  const { customer } = request;
+
+  customers.splice(customer, 1);
+
+  return response.status(200).json({ message: 'Account deleted!' });
+});
+
 app.listen(4000, () => console.log('Server is running! 🔥'));
