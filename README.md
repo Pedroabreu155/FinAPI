@@ -13,6 +13,7 @@ A FinAPI tem como objetivo fornecer operações relacionadas a uma conta bancár
 - Deve ser possível realizar um depósito
 - Deve ser possível realizar um saque
 - Deve ser possível buscar o extrato bancário do cliente por data
+- Deve ser possível buscar o saldo do cliente
 - Deve ser possível atualizar os dados do cliente na conta
 - Deve ser possível obter dados do cliente
 - Deve ser possível deletar uma conta
@@ -29,6 +30,7 @@ A FinAPI tem como objetivo fornecer operações relacionadas a uma conta bancár
 - Não deve ser possível fazer depósito em uma conta não existente
 - Não deve ser possível buscar o extrato em uma conta não existente
 - Não deve ser possível fazer saque em uma conta não existente
+- Não deve ser possível buscar o saldo em uma conta não existente
 - Não deve ser possível excluir uma conta não existente
 - Não deve ser possível fazer saque quando o saldo for insuficiente
 - Não deve ser possível cadastrar uma conta com CPF já existente
