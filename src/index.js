@@ -72,4 +72,4 @@ app.post('/deposit', verifyIfCPFAccountExists, (request, response) => {
   return response.status(201).json({ message: 'Operation succedded!' });
 });
 
-app.listen(3333, () => console.log('Server is running! 🔥'));
+app.listen(4000, () => console.log('Server is running! 🔥'));
