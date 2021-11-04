@@ -6,6 +6,22 @@ app.use(express.json());
 
 const customers = [];
 
+//Middleware
+
+const verifyIfCPFAccountExists = (request, response, next) => {
+  const { cpf } = request.headers;
+
+  const customer = customers.find((customer) => customer.cpf === cpf);
+
+  if (!customer) {
+    return response.status(400).json({ message: 'Customer not found!' });
+  }
+
+  request.customer = customer;
+
+  return next();
+};
+
 app.get('/', (_, response) => {
   return response.json({ message: 'Hello World' });
 });
@@ -31,14 +47,29 @@ app.post('/account', (request, response) => {
   return response.status(201).send();
 });
 
-app.get('/statement/:cpf', (request, response) => {
-  const { cpf } = request.params;
-
-  const customer = customers.find((customer) => customer.cpf === cpf);
+app.get('/statement', verifyIfCPFAccountExists, (request, response) => {
+  const { customer } = request;
 
   return response.json({
     statement: customer.statement,
   });
+});
+
+app.post('/deposit', verifyIfCPFAccountExists, (request, response) => {
+  const { customer } = request;
+
+  const { description, amount } = request.body;
+
+  const statementOperation = {
+    description,
+    amount,
+    created_at: new Date(),
+    type: 'credit',
+  };
+
+  customer.statement.push(statementOperation);
+
+  return response.status(201).json({ message: 'Operation succedded!' });
 });
 
 app.listen(3333, () => console.log('Server is running! 🔥'));
