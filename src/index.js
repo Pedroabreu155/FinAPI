@@ -31,4 +31,14 @@ app.post('/account', (request, response) => {
   return response.status(201).send();
 });
 
+app.get('/statement/:cpf', (request, response) => {
+  const { cpf } = request.params;
+
+  const customer = customers.find((customer) => customer.cpf === cpf);
+
+  return response.json({
+    statement: customer.statement,
+  });
+});
+
 app.listen(3333, () => console.log('Server is running! 🔥'));
